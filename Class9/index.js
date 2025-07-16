@@ -74,6 +74,34 @@ app.patch("/admin", (req, res) => {
   }
 });
 
+app.post("/user/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const foodItem = FoodMenu.find((item) => item.id === id);
+  if (foodItem) {
+    AddToCart.push(foodItem);
+    res.status(201).send("Item added to cart successfully");
+  } else {
+    res.send("Item OUT of stock");
+  }
+});
+
+app.delete("/user/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = AddToCart.findIndex((item) => item.id === id);
+
+  if (index != -1) {
+    AddToCart.splice(index, 1);
+    res.status(200).send("Item removed successfully from the cart");
+  } else {
+    res.send("Item is not present in cart");
+  }
+});
+
+app.get("/user", (req, res) => {
+  if (AddToCart.length == 0) res.send("Cart is empty");
+  else res.send(AddToCart);
+});
+
 app.listen(5000, () => {
   console.log("Listening on port 5000");
 });
